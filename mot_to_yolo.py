@@ -23,7 +23,26 @@ def process_sequence(anno_dir, output_dir):
         file = open(write_dir, 'w+')
         bbs_df.to_csv(file, header=False, index=False)
 
+def process_mot(mot_dataset_dir):
+    train = os.path.join(mot_dataset_dir, 'train')
+    test = os.path.join(mot_dataset_dir, 'test')
+    train_seqs = os.listdir(train)
+    test_seqs = os.listdir(test)
+    for seq in test_seqs:
+        det_path = os.path.join(test, seq, 'det/det.txt')
+        yolo_output = os.path.join(test, seq, 'det/yolo')
+        if not os.path.exists(yolo_output):
+            os.makedirs(yolo_output)
+        process_sequence(det_path, yolo_output)
+
+
+
+
+
+
 if __name__ == '__main__':
     test_sequence = '/mnt/disk1/Yudong/MOT20/train/MOT20-01/det/det.txt'
     test_output_dir = '/mnt/disk1/Yudong/MOT20/train/MOT20-01/det/yolo/'
-    process_sequence(test_sequence, test_output_dir)
+    mot_dir = '/mnt/disk1/Yudong/MOT20'
+    process_mot(mot_dir)
+    # process_sequence(test_sequence, test_output_dir)
