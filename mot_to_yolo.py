@@ -34,8 +34,38 @@ def process_mot(mot_dataset_dir):
         if not os.path.exists(yolo_output):
             os.makedirs(yolo_output)
         process_sequence(det_path, yolo_output)
+    for seq in train_seqs:
+        det_path = os.path.join(train, seq, 'det/det.txt')
+        yolo_output = os.path.join(train, seq, 'det/yolo')
+        if not os.path.exists(yolo_output):
+            os.makedirs(yolo_output)
+        process_sequence(det_path, yolo_output)
 
-
+def reorganizing_dirs(mot_dir):
+    test = os.path.join(mot_dir, 'test')
+    train = os.path.join(mot_dir, 'train')
+    train_seqs = os.listdir(train)
+    test_seqs = os.listdir(test)
+    for seq in test_seqs:
+        print('processing ' + seq)
+        source = os.path.join(test, seq, 'det/yolo')
+        dest = os.path.join(test, seq, 'labels')
+        print('moved files to '+dest)
+        os.rename(source, dest)
+        image_dir = os.path.join(test, seq, 'img1')
+        image_rename = os.path.join(test, seq, 'images')
+        print('Renamed image folder to ' + image_rename)
+        os.rename(image_dir, image_rename)
+    for seq in train_seqs:
+        print('processing ' + seq)
+        source = os.path.join(train, seq, 'det/yolo')
+        dest = os.path.join(train, seq, 'labels')
+        print('moved files to ' + dest)
+        os.rename(source, dest)
+        image_dir = os.path.join(train, seq, 'img1')
+        image_rename = os.path.join(train, seq, 'images')
+        print('Renamed image folder to ' + image_rename)
+        os.rename(image_dir, image_rename)
 
 
 
@@ -44,5 +74,8 @@ if __name__ == '__main__':
     test_sequence = '/mnt/disk1/Yudong/MOT20/train/MOT20-01/det/det.txt'
     test_output_dir = '/mnt/disk1/Yudong/MOT20/train/MOT20-01/det/yolo/'
     mot_dir = '/mnt/disk1/Yudong/MOT20'
-    process_mot(mot_dir)
+    test_source = '/mnt/disk1/Yudong/MOT20/test/MOT20-04/labels'
+    test_dest = '/mnt/disk1/Yudong/MOT20/test/MOT20-04/det/labels'
+    # process_mot(mot_dir)
+    reorganizing_dirs(mot_dir)
     # process_sequence(test_sequence, test_output_dir)
